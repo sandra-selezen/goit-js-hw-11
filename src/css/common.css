@@ -13,6 +13,11 @@ body {
   margin: 0;
 }
 
+a {
+  display: block;
+  text-decoration: none;
+}
+
 img {
   display: block;
   max-width: 100%;
@@ -28,10 +33,6 @@ img {
   padding-top: 20px;
   padding-bottom: 20px;
   margin: 0 auto;
-}
-
-.search-form {
-  /* outline: 1px solid blue; */
 }
 
 input {
