@@ -1,5 +1,5 @@
 export { getImages };
-import axios from 'axios';
+import axios from "axios";
 
 // const axios = require('axios');
 const API_KEY = "34233936-07b157599ce71148811fea33a";

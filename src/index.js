@@ -1,7 +1,7 @@
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { Notify } from "notiflix/build/notiflix-notify-aio";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import { getImages } from './api';
+import { getImages } from "./api";
 
 let searchQuery = "";
 const PER_PAGE = 40;
@@ -35,9 +35,9 @@ const renderGallery = items => {
   </div></div></a>`
   }).join("");
 
-  refs.gallery.insertAdjacentHTML('beforeend', markup);
+  refs.gallery.insertAdjacentHTML("beforeend", markup);
 
-  let lightBox = new SimpleLightbox('.gallery a', {
+  let lightBox = new SimpleLightbox(".gallery a", {
     captionsData: "alt",
     captionDelay: 250
   });
