@@ -37,7 +37,6 @@ const renderGallery = items => {
   }).join("");
   
   refs.gallery.innerHTML = murkup;
-  // refs.gallery.insertAdjacentElement("beforeend", murkup);
 }
 
 const onHandleSubmit = (event) => {
