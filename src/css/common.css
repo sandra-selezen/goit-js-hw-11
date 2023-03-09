@@ -16,11 +16,13 @@ body {
 a {
   display: block;
   text-decoration: none;
+  color: inherit;
 }
 
 img {
   display: block;
-  max-width: 100%;
+  width: 100%;
+  height: 200px;
 }
 
 .header {
