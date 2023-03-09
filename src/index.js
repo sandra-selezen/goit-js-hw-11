@@ -16,7 +16,7 @@ const refs = {
 }
 
 const renderGallery = items => {
-  const murkup = items.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
+  const markup = items.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
     return `<a class="gallery__item" href="${largeImageURL}"><div class="photo-card">
   <img src="${webformatURL}" alt="${tags}" loading="lazy" />
   <div class="info">
@@ -32,11 +32,15 @@ const renderGallery = items => {
     <p class="info-item">
       <b>Downloads</b> ${downloads}
     </p>
-  </div>
-</div></a>`
+  </div></div></a>`
   }).join("");
-  
-  refs.gallery.innerHTML = murkup;
+
+  refs.gallery.insertAdjacentHTML('beforeend', markup);
+
+  let lightBox = new SimpleLightbox('.gallery a', {
+    captionsData: "alt",
+    captionDelay: 250
+  });
 }
 
 const onHandleSubmit = (event) => {
@@ -49,25 +53,14 @@ const onHandleSubmit = (event) => {
       items = data.hits;
       totalItems = data.totalHits;
       renderGallery(items);
-      console.log(items);
     })
     .catch((error) => console.log(error));
 }
 
 refs.form.addEventListener("submit", onHandleSubmit);
 
-let lightBox = new SimpleLightbox('.gallery a', {
-  captionsData: "alt",
-  captionDelay: 250
-});
 
-lightBox.on('show.simplelightbox', function () {
-  console.log(lightBox);
-});
 
-lightBox.on('error.simplelightbox', function (event) {
-	console.log(event); // some usefull information
-});
 
 /*
 Notify.failure("Sorry, there are no images matching your search query. Please try again.");
