@@ -61,16 +61,25 @@ const renderGallery = items => {
 const onHandleSubmit = (event) => {
   event.preventDefault();
   const { value } = event.target.searchQuery;
+
   searchQuery = value;
 
   getImages(searchQuery, PER_PAGE, page)
     .then(({data}) => {
       items = data.hits;
       totalItems = data.totalHits;
-      console.log(items);
+      if (totalItems > 0) {
+        Notify.success(`Hooray! We found ${totalItems} images.`);
+      }
+      console.log(data);
       if (items.length === 0) {
         Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         return;
+      }
+
+      if (searchQuery === value) {
+        refs.gallery.innerHTML = "";
+        renderGallery(items);
       }
 
       renderGallery(items);
