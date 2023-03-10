@@ -26,8 +26,10 @@ function onHandleSubmit(event) {
   event.preventDefault();
 
   const { value } = event.target.searchQuery;
-  console.log(value);
-
+  // console.log(value);
+  refs.gallery.innerHTML = "";
+  page = 1;
+  
   // if (searchQuery === value || !value) {
   //   // return;
   //   refs.gallery.innerHTML = "";
