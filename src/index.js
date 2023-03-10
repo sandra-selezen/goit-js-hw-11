@@ -27,6 +27,14 @@ function onHandleSubmit(event) {
 
   const { value } = event.target.searchQuery;
   console.log(value);
+
+  // if (searchQuery === value || !value) {
+  //   // return;
+  //   refs.gallery.innerHTML = "";
+  //   page = 0;
+  //   getImages();
+  // }
+
   searchQuery = value;
 
   getImages();
@@ -34,11 +42,13 @@ function onHandleSubmit(event) {
 
 function getImages() {
   getData(searchQuery, PER_PAGE, page)
-    .then(({data}) => {
+    .then(({ data }) => {
+      
       items = data.hits;
       totalItems = data.totalHits;
       totalPages = Math.ceil(totalItems / PER_PAGE);
       console.log(totalPages);
+
       if (items.length === 0) {
         Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         return;
@@ -52,11 +62,6 @@ function getImages() {
         Notify.info("We're sorry, but you've reached the end of search results.");
       }
       
-      if (searchQuery === refs.input.value) {
-        refs.gallery.innerHTML = "";
-        renderGallery(items);
-      }
-
       renderGallery(items);
     })
     .catch((error) => console.log(error));
@@ -88,26 +93,36 @@ function renderGallery (items) {
     captionsData: "alt",
     captionDelay: 250
   });
-  // lightBox.refresh();
+  lightBox.refresh();
+  const { height: cardHeight } = document
+  .querySelector(".gallery")
+  .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: "smooth",
+  });
 };
 
-// refs.loadMoreBtn.addEventListener("click", handleLoadMore);
+refs.loadMoreBtn.addEventListener("click", handleLoadMore);
 
-// function handleLoadMore() {
-//   page += 1;
-//   getImages();
-// }
+function handleLoadMore() {
+  if (items.length && page < totalPages) {
+    page += 1;
+    getImages();
+  }
+}
 
-// const observer = new IntersectionObserver(onButtonIntersect);
-// observer.observe(refs.loadMoreBtn);
+const observer = new IntersectionObserver(onButtonIntersect);
+observer.observe(refs.loadMoreBtn);
 
-// function onButtonIntersect(entities) {
-//   const [button] = entities;
+function onButtonIntersect(entities) {
+  const [button] = entities;
 
-//   if (button.isIntersecting) {
-//     handleLoadMore();
-//   }
-// };
+  if (button.isIntersecting) {
+    handleLoadMore();
+  }
+};
 
 window.addEventListener("scroll", throttle(onScroll, 3000));
 function onScroll() {
