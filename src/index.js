@@ -1,3 +1,4 @@
+import throttle from 'lodash.throttle';
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
@@ -12,13 +13,22 @@ let totalItems = 0;
 
 const refs = {
   form: document.querySelector("#search-form"),
+  input: document.querySelector("input[type=text]"),
   gallery: document.querySelector(".gallery"),
   header: document.querySelector(".header"),
+  clearBtn: document.querySelector(".btn-clear"),
 }
 
-window.addEventListener("scroll",(event) => {
+window.addEventListener("scroll", throttle(onScroll, 3000));
+function onScroll() {
   refs.header.classList.add("on-scroll");
-});
+};
+
+refs.clearBtn.addEventListener("click", onClearBtnClick);
+function onClearBtnClick(event) {
+  refs.input.value = "";
+}
+
 
 const renderGallery = items => {
   const markup = items.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
@@ -57,6 +67,12 @@ const onHandleSubmit = (event) => {
     .then(({data}) => {
       items = data.hits;
       totalItems = data.totalHits;
+      console.log(items);
+      if (items.length === 0) {
+        Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+        return;
+      }
+
       renderGallery(items);
     })
     .catch((error) => console.log(error));
