@@ -2,14 +2,14 @@ import throttle from 'lodash.throttle';
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import { getImages } from "./api";
+import { getData } from "./api";
 
 let searchQuery = "";
 const PER_PAGE = 40;
 let page = 1;
 let totalPages = 0;
-let items = [];
 let totalItems = 0;
+let items = [];
 
 const refs = {
   form: document.querySelector("#search-form"),
@@ -17,20 +17,52 @@ const refs = {
   gallery: document.querySelector(".gallery"),
   header: document.querySelector(".header"),
   clearBtn: document.querySelector(".btn-clear"),
-}
-
-window.addEventListener("scroll", throttle(onScroll, 3000));
-function onScroll() {
-  refs.header.classList.add("on-scroll");
+  loadMoreBtn: document.querySelector(".load-more"),
 };
 
-refs.clearBtn.addEventListener("click", onClearBtnClick);
-function onClearBtnClick(event) {
-  refs.input.value = "";
-}
+refs.form.addEventListener("submit", onHandleSubmit);
 
+function onHandleSubmit(event) {
+  event.preventDefault();
 
-const renderGallery = items => {
+  const { value } = event.target.searchQuery;
+  console.log(value);
+  searchQuery = value;
+
+  getImages();
+};
+
+function getImages() {
+  getData(searchQuery, PER_PAGE, page)
+    .then(({data}) => {
+      items = data.hits;
+      totalItems = data.totalHits;
+      totalPages = Math.ceil(totalItems / PER_PAGE);
+      console.log(totalPages);
+      if (items.length === 0) {
+        Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+        return;
+      }
+
+      if (totalItems > 0) {
+        Notify.success(`Hooray! We found ${totalItems} images.`);
+      }
+      
+      if (page >= totalPages) {
+        Notify.info("We're sorry, but you've reached the end of search results.");
+      }
+      
+      if (searchQuery === refs.input.value) {
+        refs.gallery.innerHTML = "";
+        renderGallery(items);
+      }
+
+      renderGallery(items);
+    })
+    .catch((error) => console.log(error));
+};
+
+function renderGallery (items) {
   const markup = items.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
     return `<div class="photo-card"><a class="gallery__item" href="${largeImageURL}">
   <img src="${webformatURL}" alt="${tags}" loading="lazy" />
@@ -51,46 +83,41 @@ const renderGallery = items => {
   }).join("");
 
   refs.gallery.insertAdjacentHTML("beforeend", markup);
-
+  
   let lightBox = new SimpleLightbox(".gallery a", {
     captionsData: "alt",
     captionDelay: 250
   });
+  // lightBox.refresh();
+};
+
+// refs.loadMoreBtn.addEventListener("click", handleLoadMore);
+
+// function handleLoadMore() {
+//   page += 1;
+//   getImages();
+// }
+
+// const observer = new IntersectionObserver(onButtonIntersect);
+// observer.observe(refs.loadMoreBtn);
+
+// function onButtonIntersect(entities) {
+//   const [button] = entities;
+
+//   if (button.isIntersecting) {
+//     handleLoadMore();
+//   }
+// };
+
+window.addEventListener("scroll", throttle(onScroll, 3000));
+function onScroll() {
+  refs.header.classList.add("on-scroll");
+};
+
+refs.clearBtn.addEventListener("click", onClearBtnClick);
+function onClearBtnClick(event) {
+  refs.input.value = "";
 }
-
-const onHandleSubmit = (event) => {
-  event.preventDefault();
-  const { value } = event.target.searchQuery;
-
-  searchQuery = value;
-
-  getImages(searchQuery, PER_PAGE, page)
-    .then(({data}) => {
-      items = data.hits;
-      totalItems = data.totalHits;
-      if (totalItems > 0) {
-        Notify.success(`Hooray! We found ${totalItems} images.`);
-      }
-      console.log(data);
-      if (items.length === 0) {
-        Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-        return;
-      }
-
-      if (searchQuery === value) {
-        refs.gallery.innerHTML = "";
-        renderGallery(items);
-      }
-
-      renderGallery(items);
-    })
-    .catch((error) => console.log(error));
-}
-
-refs.form.addEventListener("submit", onHandleSubmit);
-
-
-
 
 /*
 Notify.failure("Sorry, there are no images matching your search query. Please try again.");
