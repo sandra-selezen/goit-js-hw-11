@@ -34,6 +34,11 @@ img {
   opacity: 1;
 }
 
+.section {
+  padding-top: 120px;
+  padding-bottom: 40px;
+}
+
 .on-scroll {
   opacity: 0.9;
 }
@@ -81,7 +86,9 @@ input {
 }
 
 .btn-search:hover,
-.btn-search:focus {
+.btn-search:focus
+.load-more:focus,
+.load-more:hover {
   background-color: rgba(152, 150, 241, 0.5);
 }
 
@@ -97,4 +104,17 @@ input {
 
 .form-icon {
   fill: #ffffff;
+}
+
+.load-more {
+  display: block;
+  margin: 0 auto;
+  height: 40px;
+  width: 100px;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #ffffff;
+  border: 2px solid #9896f1;
+  background-color: #9896f1;
+  transition: background-color 300ms ease-in-out;
 }
