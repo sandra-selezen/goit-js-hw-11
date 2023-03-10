@@ -13,11 +13,16 @@ let totalItems = 0;
 const refs = {
   form: document.querySelector("#search-form"),
   gallery: document.querySelector(".gallery"),
+  header: document.querySelector(".header"),
 }
+
+window.addEventListener("scroll",(event) => {
+  refs.header.classList.add("on-scroll");
+});
 
 const renderGallery = items => {
   const markup = items.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
-    return `<a class="gallery__item" href="${largeImageURL}"><div class="photo-card">
+    return `<div class="photo-card"><a class="gallery__item" href="${largeImageURL}">
   <img src="${webformatURL}" alt="${tags}" loading="lazy" />
   <div class="info">
     <p class="info-item">
@@ -32,7 +37,7 @@ const renderGallery = items => {
     <p class="info-item">
       <b>Downloads</b> ${downloads}
     </p>
-  </div></div></a>`
+  </div></a></div>`
   }).join("");
 
   refs.gallery.insertAdjacentHTML("beforeend", markup);
