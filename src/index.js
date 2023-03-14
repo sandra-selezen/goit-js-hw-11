@@ -20,6 +20,11 @@ const refs = {
   loadMoreBtn: document.querySelector(".load-more"),
 };
 
+let lightBox = new SimpleLightbox(".gallery a", {
+  captionsData: "alt",
+  captionDelay: 250
+});
+
 refs.loadMoreBtn.style.display = "none";
 
 refs.form.addEventListener("submit", onHandleSubmit);
@@ -90,10 +95,6 @@ function renderGallery (items) {
 
   refs.gallery.insertAdjacentHTML("beforeend", markup);
   
-  let lightBox = new SimpleLightbox(".gallery a", {
-    captionsData: "alt",
-    captionDelay: 250
-  });
   lightBox.refresh();
 };
 
