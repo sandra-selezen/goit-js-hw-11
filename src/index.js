@@ -37,7 +37,7 @@ function onHandleSubmit(event) {
 
 async function getImages() {
   try {
-    data = await getData(searchQuery, PER_PAGE, page);
+    const data = await getData(searchQuery, PER_PAGE, page);
     console.log(data);
     items = data.hits;
     totalItems = data.totalHits;
