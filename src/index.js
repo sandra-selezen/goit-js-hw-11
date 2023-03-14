@@ -20,6 +20,8 @@ const refs = {
   loadMoreBtn: document.querySelector(".load-more"),
 };
 
+refs.loadMoreBtn.style.display = "none";
+
 refs.form.addEventListener("submit", onHandleSubmit);
 
 function onHandleSubmit(event) {
@@ -28,45 +30,42 @@ function onHandleSubmit(event) {
   const { value } = event.target.searchQuery;
   // console.log(value);
   refs.gallery.innerHTML = "";
-
-  
-  // if (searchQuery === value || !value) {
-  //   // return;
-  //   refs.gallery.innerHTML = "";
-  //   page = 0;
-  //   getImages();
-  // }
-
   searchQuery = value;
-
+  page = 1;
   getImages();
 };
 
-function getImages() {
-  getData(searchQuery, PER_PAGE, page)
-    .then(({ data }) => {
-      
-      items = data.hits;
-      totalItems = data.totalHits;
-      totalPages = Math.ceil(totalItems / PER_PAGE);
-      console.log(totalPages);
+async function getImages() {
+  try {
+    data = await getData(searchQuery, PER_PAGE, page);
+    console.log(data);
+    items = data.hits;
+    totalItems = data.totalHits;
+    totalPages = Math.ceil(totalItems / PER_PAGE);
+    console.log(totalPages);
 
-      if (items.length === 0) {
-        Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-        return;
-      }
+    if (items.length === 0) {
+      refs.loadMoreBtn.style.display = "none";
+      Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+      return;
+    }
 
-      if (totalItems > 0) {
-        Notify.success(`Hooray! We found ${totalItems} images.`);
-      }
-      
-      if (page >= totalPages) {
-        Notify.info("We're sorry, but you've reached the end of search results.");
-      }
-      
-      renderGallery(items);
-    })
-    .catch((error) => console.log(error));
+    if (page === 1 && totalItems > 0) {
+      refs.loadMoreBtn.style.display = "block";
+      Notify.success(`Hooray! We found ${totalItems} images.`);
+    }
+
+    if (page >= totalPages) {
+      refs.loadMoreBtn.style.display = "none";
+      Notify.info("We're sorry, but you've reached the end of search results.");
+      return;
+    }
+
+    renderGallery(items);
+
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 function renderGallery (items) {
@@ -96,14 +95,6 @@ function renderGallery (items) {
     captionDelay: 250
   });
   lightBox.refresh();
-  const { height: cardHeight } = document
-  .querySelector(".gallery")
-  .firstElementChild.getBoundingClientRect();
-
-  window.scrollBy({
-    top: cardHeight * 2,
-    behavior: "smooth",
-  });
 };
 
 refs.loadMoreBtn.addEventListener("click", handleLoadMore);
