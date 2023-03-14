@@ -1,4 +1,4 @@
-- Project built with parcel-project-template.
+- Project built with parcel.
 - For HTTP requests, the axios library is used.
 - Pagination.
 - async/await syntax.
