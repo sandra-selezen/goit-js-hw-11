@@ -29,7 +29,7 @@ refs.form.addEventListener("submit", onHandleSubmit);
 function onHandleSubmit(event) {
   event.preventDefault();
 
-  imagesAPIService.query = event.target.searchQuery.value;
+  imagesAPIService.query = event.target.searchQuery.value.trim();
   getImages();
   // items = imagesAPIService.getData();
   // console.log(items);

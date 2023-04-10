@@ -11,25 +11,24 @@ const searchParams = new URLSearchParams({
   safesearch: true,
 });
 
-// const getData = async (query, perPage, page) => {
-//   const { data } = await axios.get(`${URL}?key=${API_KEY}&q=${query}&${searchParams}&per_page=${perPage}&page=${page}`)
-//     .catch((error) => console.log(error));
-//   // console.log(data.hits);
-//   return data;
-// };
-
 export default class ImagesAPIService {
   constructor() {
     this.searchQuery = '';
+    this.searchParams = searchParams;
+    this.API_KEY = API_KEY;
+    this.BASE_URL = BASE_URL;
+    this.PER_PAGE = PER_PAGE;
     this.page = 1;
   }
 
   async getData() {
-    const url = `${BASE_URL}?key=${API_KEY}&q=${this.searchQuery}&${searchParams}&per_page=${PER_PAGE}&page=${this.page}`;
+    const url = `${this.BASE_URL}?key=${this.API_KEY}&q=${this.searchQuery}&${this.searchParams}&per_page=${this.PER_PAGE}&page=${this.page}`;
     try {
-      const { data } = await axios.get(url);
+      const response = await axios.get(url);
+      const data = await response.data;
+      console.log(data);
       return data;
-      // console.log(data);
+      
       // const items = await data.hits;
       // console.log(items);
     } catch (error) {
@@ -57,3 +56,11 @@ export default class ImagesAPIService {
     this.searchQuery = newQuery;
   }
 }
+
+
+// const getData = async (query, perPage, page) => {
+//   const { data } = await axios.get(`${URL}?key=${API_KEY}&q=${query}&${searchParams}&per_page=${perPage}&page=${page}`)
+//     .catch((error) => console.log(error));
+//   // console.log(data.hits);
+//   return data;
+// };
