@@ -2,11 +2,11 @@ import throttle from 'lodash.throttle';
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import { getData } from "./api";
+// import { getData } from "./api";
+import ImagesAPIService from "./api";
 
-let searchQuery = "";
-const PER_PAGE = 40;
-let page = 1;
+
+
 let totalPages = 0;
 let totalItems = 0;
 let items = [];
